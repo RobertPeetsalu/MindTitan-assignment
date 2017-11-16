@@ -26,12 +26,13 @@ def index():
     rating = predict( restaurant )
     return jsonify( { 'rating': rating } ), 201
 
-import requests
-post_data = {'price':'low', 
-             'dress_code':'formal', 
-             'accessibility':'completely', 
-             'parking_lot':'public', 
-             'smoking_area':'not_permitted', 
-             'other_services':'internet'}
-response = requests.post( 'http://127.0.0.1:5000/', data=post_data )
-print( response.text )
+
+#import requests
+#post_data = {'price':'low', 
+#             'dress_code':'formal', 
+#             'accessibility':'completely', 
+#             'parking_lot':'public', 
+#             'smoking_area':'not_permitted', 
+#             'other_services':'internet'}
+#response = requests.post( 'http://127.0.0.1:5000/', data=post_data )
+#print( response.text )

@@ -10,12 +10,13 @@ Restaurants with more parking types and more client feedback will have a bigger 
 What could induce bias though is skewed representation of client ratings (254 zeros, 421 ones and 486 twos). Better represented ratings get a bigger classification confidence and thus win in classification more frequently. If the current dataset is a good representation of future rating proportions, then there's no need to correct, as we will want to classify more frequent values more confidently. As there's no way for me to know if the dataset represents future proportions well, I'll suppose that's the case. 
 
 PREPROCESSING
-Here I reused some of my previous projects for speed and quality - importing and conversion of data, one-hot encoding, train-test splitting. Luckily the data structure is very simple and clean, so no problems here.
+Here I reused some of my previous projects for speed and quality. Luckily the data structure is very simple and clean, so no problems here.
 
 SERVING RESTAURANT CLASSIFICATION THROUGH AN API
-As this was the aspect of the task that contained unknown unknowns for me (never needed to write API-s before), I wrote it before any ML code. It took some time to learn Flask and API basics, but got done eventually.
+As this was the aspect of the task that contained unknown unknowns for me (never needed to write API-s before), I wrote it before any ML code. It took some time to learn Flask and API basics, but got done eventually. Requests to localhost port 5000 containing required restaurant features as a list in a JSON string will get a response with predicted rating. Other requests will get a Bad request error in JSON with instructions for a good request.
 
 ALGORITHM SELECTION AND PARAMETRIZATION
+As performance is said not to matter, any classification algorithm will do. I went with LinearSVC. If we give it the rating column with string values "0", "1" and "2", it does multiclass classification by calculating 3 hyperplanes dividing the feature space - one between each two restaurant rating categories.
 
 PIPELINE
-
+As the features are pre-selected and don't need normalization nor standardization, there's no need to evaluate pipeline accuracy and use of the sklearn Pipeline class is unnecessary. Each run of main.py retrains the model with current data. 

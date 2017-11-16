@@ -33,8 +33,8 @@ def import_data():
     rating = pd.read_csv( 
             filepath_or_buffer = path.join( PROJECT_DIR, 'data', 'rating_final.csv' ), 
             usecols = ['placeID', 'userID', 'rating'], 
-            error_bad_lines = False, 
-            dtype = {'rating': object}
+            error_bad_lines = False 
+#            dtype = {'rating': object}
         ).dropna()
     
     # Remove duplicate ratings from the same user about the same restaurant if any and drop userID
@@ -45,8 +45,8 @@ def import_data():
     
     return data.drop( 'placeID', axis=1 )
 
-def encode( df ):
-    """ One-hot-encode categorical features.
+def one_hot_encode( df ):
+    """ One-hot-encodes categorical features.
     
     Parameters
     ----------
@@ -55,9 +55,10 @@ def encode( df ):
     
     Returns
     -------
-    df : Pandas DataFrame
-        Dataframe with encoded categorical features next to unencoded original features.
+    encoded_df : Pandas DataFrame
+        Dataframe with encoded categorical features.
     """
+    encoded_df = pd.DataFrame()
     categories = df.apply( pd.Series.nunique )
     categorical = df.select_dtypes( include=['object'] ).axes[1]
     for column in categorical:
@@ -66,5 +67,5 @@ def encode( df ):
         hot = OneHotEncoder( sparse = False, dtype = bool ).fit_transform( encoded.reshape( -1, 1 ) )
         for category in range( categories[column] ):
             category_name = encoder.classes_[ category ].replace( ' ', '_' )
-            df[ column + '_' + category_name ] = hot[:,category]
-    return df
+            encoded_df[ column + '_' + category_name ] = hot[:,category]
+    return encoded_df
