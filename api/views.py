@@ -17,12 +17,18 @@ def bad_request( error ):
 
 @app.route( '/' )
 def index():
-    log.info( 'index loaded' )
+    print( 'request received' )
     if not request.json:
+        print( 'not JSON' )
         abort( 400 )
     for label in labels: #TODO test with bad requests
-        if label not in request.json or not isinstance( type( request.json[label] ), str ):
+        if label not in request.json:
+            print( 'missing label' )
             abort( 400 )
+        if not isinstance( type( request.json[label] ), str ):
+            print( 'non-text value' )
+            abort( 400 )
+            
     rating = predict( request.get_json() )
     return jsonify( { 'rating': rating } ), 201
 

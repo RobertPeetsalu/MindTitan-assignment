@@ -32,15 +32,11 @@ def train():
 #    print( '\nCross-validation scores' )
 #    print( scores )
     linear_clf.fit( independent, dependent )
-#    print( linear_clf.predict( independent.loc[20:20] ) )
     joblib.dump( linear_clf, 'model.sav' )
-#    print( data.loc[20:20].to_json( orient='records') )
     
     #Pickle an empty restaurant record with correct labels to avoid pickling LabelEncoder and OneHotEncoder
     empty_record = independent.loc[0:0].applymap(lambda x: False)
     joblib.dump( empty_record, 'empty_record.sav' )
-    
-    predict( test_restaurant ) #TODO remove
     return linear_clf
 
 def predict( restaurant ):

@@ -8,7 +8,6 @@ from api import app
 from api.models import train
 
 train()
-
-#app.debug = app.config['DEBUG']
-#print( 'serving API' )
-#app.run( host=app.config['HOST'], port=app.config['PORT'] )
+app.debug = app.config['DEBUG']
+print( 'serving API' )
+app.run( host=app.config['HOST'], port=app.config['PORT'] )

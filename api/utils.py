@@ -34,7 +34,6 @@ def import_data():
             filepath_or_buffer = path.join( PROJECT_DIR, 'data', 'rating_final.csv' ), 
             usecols = ['placeID', 'userID', 'rating'], 
             error_bad_lines = False 
-#            dtype = {'rating': object}
         ).dropna()
     
     # Remove duplicate ratings from the same user about the same restaurant if any and drop userID

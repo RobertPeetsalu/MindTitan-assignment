@@ -19,4 +19,4 @@ ALGORITHM SELECTION AND PARAMETRIZATION
 As performance is said not to matter, any classification algorithm will do. I went with LinearSVC. If we give it the rating column with string values "0", "1" and "2", it does multiclass classification by calculating 3 hyperplanes dividing the feature space - one between each two restaurant rating categories.
 
 PIPELINE
-As the features are pre-selected and don't need normalization nor standardization, there's no need to evaluate pipeline accuracy and use of the sklearn Pipeline class is unnecessary. Each run of main.py retrains the model with current data. 
+Each run of main.py retrains the model with current data. Features are pre-selected and don't need normalization nor standardization, so there's not much to do to improve pipeline accuracy. 
