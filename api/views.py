@@ -6,6 +6,7 @@
 from api import app, log
 from api.models import predict
 from flask import jsonify, request, make_response, abort
+import requests
 
 labels = ['price', 'dress_code', 'accessibility', 'parking_lot', 'smoking_area', 'other_services']
 
@@ -22,17 +23,11 @@ def index():
     for label in labels: #TODO test with bad requests
         if label not in request.json or not isinstance( type( request.json[label] ), str ):
             abort( 400 )
-    restaurant = request.get_json()
-    rating = predict( restaurant )
+    rating = predict( request.get_json() )
     return jsonify( { 'rating': rating } ), 201
 
-
-#import requests
-#post_data = {'price':'low', 
-#             'dress_code':'formal', 
-#             'accessibility':'completely', 
-#             'parking_lot':'public', 
-#             'smoking_area':'not_permitted', 
-#             'other_services':'internet'}
-#response = requests.post( 'http://127.0.0.1:5000/', data=post_data )
-#print( response.text )
+@app.route( '/test' )
+def test():
+    response = requests.post( 'http://127.0.0.1:5000/', data=predict.test_restaurant )
+    print( response.text )
+    return response
