@@ -6,8 +6,8 @@
 from api.utils import import_data, one_hot_encode
 import pandas as pd
 from sklearn.svm import LinearSVC
-from sklearn.model_selection import cross_val_score
 from sklearn.externals import joblib
+#from sklearn.model_selection import cross_val_score
 
 test_restaurant = '[{"price":"low", \
                      "dress_code":"formal", \
@@ -29,15 +29,18 @@ def train():
     independent = one_hot_encode( data.drop( 'rating', axis=1 ) )
     linear_clf = LinearSVC( C=1.0, dual=False, fit_intercept=False )
 #    scores = cross_val_score( linear_clf, independent, dependent, cv=5 )
-#    print( 'Cross-validation scores' )
+#    print( '\nCross-validation scores' )
 #    print( scores )
     linear_clf.fit( independent, dependent )
 #    print( linear_clf.predict( independent.loc[20:20] ) )
     joblib.dump( linear_clf, 'model.sav' )
-    
 #    print( data.loc[20:20].to_json( orient='records') )
-    predict( test_restaurant ) #TODO remove
     
+    #Pickle an empty restaurant record with correct labels to avoid pickling LabelEncoder and OneHotEncoder
+    empty_record = independent.loc[0:0].applymap(lambda x: False)
+    joblib.dump( empty_record, 'empty_record.sav' )
+    
+    predict( test_restaurant ) #TODO remove
     return linear_clf
 
 def predict( restaurant ):
@@ -62,14 +65,13 @@ def predict( restaurant ):
                 "smoking_area":"not_permitted", 
                 "other_services":"internet"}]' )
     """
+    df_restaurant = pd.read_json( restaurant, 'records' )
+    record = joblib.load( 'empty_record.sav' )
+    record.update( one_hot_encode( df_restaurant ) )
+#    print( '\nEncoded restaurant features:' )
+#    print( record )
     model = joblib.load( 'model.sav' )
-    df_restaurant = pd.read_json( restaurant, 'records' ) #TODO test
-    
-    print( df_restaurant.info() )
-    encoded_restaurant = one_hot_encode( df_restaurant ) #TODO test
-    print( 'encoded' )
-    print( encoded_restaurant.info() )
-    rating = model.predict( encoded_restaurant ) #TODO test
-    print( 'rating' )
+    rating = model.predict( record )
+    print( '\nPredicted restaurant rating:' )
     print( rating )
     return rating
