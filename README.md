@@ -16,7 +16,7 @@ SERVING RESTAURANT CLASSIFICATION THROUGH AN API
 As this was the aspect of the task that contained unknown unknowns for me (never needed to write API-s before), I wrote it before any ML code. It took some time to learn Flask and API basics, but got done eventually. Requests to localhost port 5000 containing required restaurant features as a list in a JSON string will get a response with predicted rating. Other requests will get a Bad request error in JSON with instructions for a good request.
 
 ALGORITHM SELECTION AND PARAMETRIZATION
-As performance is said not to matter, any classification algorithm will do. I went with LinearSVC. If we give it the rating column with string values "0", "1" and "2", it does multiclass classification by calculating 3 hyperplanes dividing the feature space - one between each two restaurant rating categories.
+As performance is said not to matter, any classification algorithm will do. I went with LinearSVC. It does multiclass classification by dividing the feature space with 3 hyperplanes - one between each two restaurant rating categories.
 
 PIPELINE
-Each run of main.py retrains the model with current data. Features are pre-selected and don't need normalization nor standardization, so there's not much to do to improve pipeline accuracy. 
+Each run of main.py retrains the model with current data. Features are pre-selected and don't need normalization nor standardization, so there's not much to do to improve pipeline accuracy and I skipped using Pipeline class altogether. 
