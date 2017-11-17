@@ -8,16 +8,17 @@ except ImportError as e:
 
 
 class BaseConfig(BasePrivate):
-    HOST = '127.0.0.1'
     PORT = 5000
 
 
 class DevelopmentConfig(BaseConfig):
+    HOST = '127.0.0.1'
     DEBUG = True
     TESTING = True
 
 
 class ProductionConfig(BaseConfig):
+    HOST = '0.0.0.0'
     DEBUG = False
     TESTING = False
 
