@@ -4,9 +4,11 @@
 """
 from api import log
 from api.utils import import_data, one_hot_encode
+from sys import exc_info
 import pandas as pd
 from sklearn.svm import LinearSVC
 from sklearn.externals import joblib
+from flask import abort
 #from sklearn.model_selection import cross_val_score
 
 def train():
@@ -32,13 +34,13 @@ def train():
     joblib.dump( empty_record, 'empty_record.sav' )
     return linear_clf
 
-def predict( restaurant ):
-    """ Predicts restaurant rating.
+def predict( restaurants ):
+    """ Predicts ratings of a list of restaurants.
     
     Parameters
     ----------
-    restaurant : JSON array
-        List of restaurant features in square brackets.
+    restaurants : JSON array
+        List of restaurant features.
     
     Returns
     -------
@@ -47,20 +49,34 @@ def predict( restaurant ):
     
     Example calls
     -------------
-    predict( '[{"price":"low", 
+    predict( '[{"price":"medium", 
+                "dress_code":"formal", 
+                "accessibility":"completely", 
+                "parking_lot":"public", 
+                "smoking_area":"not_permitted", 
+                "other_services":"internet"},
+               {"price":"low", 
                 "dress_code":"formal", 
                 "accessibility":"completely", 
                 "parking_lot":"public", 
                 "smoking_area":"not_permitted", 
                 "other_services":"internet"}]' )
     """
-    df_restaurant = pd.DataFrame.from_dict( restaurant )
-    record = joblib.load( 'empty_record.sav' )
-    record.update( one_hot_encode( df_restaurant ) )
-#    log.info( '\nEncoded restaurant features:' )
-#    log.info( record )
+#    records = joblib.load( 'empty_record.sav' )
+    df_restaurants = one_hot_encode( pd.DataFrame.from_dict( restaurants ) )
+    encoded = joblib.load( 'empty_record.sav' )
+    encoded_restaurants = pd.concat( [encoded, df_restaurants], ignore_index=True).fillna( False ).drop(0)
+#    for restaurant in range( len( restaurants ) ):
+#        records[restaurant] = pd.concat([records, records], ignore_index=True)
+#    records.update( one_hot_encode( df_restaurants ) )
+    log.info( '\nEncoded restaurant features:' )
+    log.info( encoded_restaurants )
     model = joblib.load( 'model.sav' )
-    rating = model.predict( record )
-    log.info( '\nPredicted restaurant rating:' )
-    log.info( rating )
-    return rating
+    try: 
+        rating = model.predict( encoded_restaurants )
+        log.info( '\nPredicted restaurant rating:' )
+        log.info( rating )
+        return rating
+    except ValueError:
+        log.info( "Unexpected error:", exc_info()[0] )
+        abort( 416 )
