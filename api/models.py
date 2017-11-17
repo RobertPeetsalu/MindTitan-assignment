@@ -2,7 +2,7 @@
 """
 @author: Robert Peetsalu
 """
-
+from api import log
 from api.utils import import_data, one_hot_encode
 import pandas as pd
 from sklearn.svm import LinearSVC
@@ -54,13 +54,13 @@ def predict( restaurant ):
                 "smoking_area":"not_permitted", 
                 "other_services":"internet"}]' )
     """
-    df_restaurant = pd.read_json( restaurant, 'records' )
+    df_restaurant = pd.DataFrame.from_dict( restaurant )
     record = joblib.load( 'empty_record.sav' )
     record.update( one_hot_encode( df_restaurant ) )
-#    print( '\nEncoded restaurant features:' )
-#    print( record )
+#    log.info( '\nEncoded restaurant features:' )
+#    log.info( record )
     model = joblib.load( 'model.sav' )
     rating = model.predict( record )
-    print( '\nPredicted restaurant rating:' )
-    print( rating )
+    log.info( '\nPredicted restaurant rating:' )
+    log.info( rating )
     return rating
