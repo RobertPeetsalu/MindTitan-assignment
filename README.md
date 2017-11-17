@@ -13,7 +13,7 @@ PREPROCESSING
 Here I reused some of my previous projects for speed and quality. Luckily the data structure is very simple and clean, so no problems here.
 
 SERVING RESTAURANT CLASSIFICATION THROUGH AN API
-As this was the aspect of the task that contained unknown unknowns for me (never needed to write API-s before), I wrote it before any ML code. It took some time to learn Flask and API basics, but got done eventually. Requests to localhost port 5000 containing required restaurant features as a list in a JSON string will get a response with predicted rating. Other requests will get a Bad request error in JSON with instructions for a good request.
+As this was the aspect of the task that contained unknown unknowns for me (never needed to write API-s before), I wrote it before any ML code. It took some time to learn Flask and API basics, but got done eventually. Requests to localhost port 5000 containing required restaurant features as a list in a JSON string will get a response with predicted ratings. Multiple restaurant ratings can be requested simultaneously. Other requests will get a bad_request_error response in JSON with hints to what's wrong.
 
 ALGORITHM SELECTION AND PARAMETRIZATION
 As performance is said not to matter, any classification algorithm will do. I went with LinearSVC. It does multiclass classification by dividing the feature space with 3 hyperplanes - one between each two restaurant rating categories.
