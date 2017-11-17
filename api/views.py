@@ -17,23 +17,28 @@ def bad_request( error ):
 
 @app.route( '/' )
 def index():
-    print( 'request received' )
+    log.info( 'request received' )
     if not request.json:
-        print( 'not JSON' )
+        log.info( 'not JSON' )
         abort( 400 )
     for label in labels: #TODO test with bad requests
         if label not in request.json:
-            print( 'missing label' )
+            log.info( 'missing label' )
             abort( 400 )
         if not isinstance( type( request.json[label] ), str ):
-            print( 'non-text value' )
+            log.info( 'non-text value' )
             abort( 400 )
-            
     rating = predict( request.get_json() )
     return jsonify( { 'rating': rating } ), 201
 
 @app.route( '/test' )
 def test():
-    response = requests.post( 'http://127.0.0.1:5000/', data=predict.test_restaurant )
-    print( response.text )
+    test_restaurant = '[{"price":"low", \
+                     "dress_code":"formal", \
+                     "accessibility":"completely", \
+                     "parking_lot":"public", \
+                     "smoking_area":"not_permitted", \
+                     "other_services":"internet"}]'
+    response = requests.post( 'http://127.0.0.1:5000/', data=test_restaurant )
+    log.info( response.text )
     return response

@@ -9,13 +9,6 @@ from sklearn.svm import LinearSVC
 from sklearn.externals import joblib
 #from sklearn.model_selection import cross_val_score
 
-test_restaurant = '[{"price":"low", \
-                     "dress_code":"formal", \
-                     "accessibility":"completely", \
-                     "parking_lot":"public", \
-                     "smoking_area":"not_permitted", \
-                     "other_services":"internet"}]'
-
 def train():
     """ Trains a restaurant rating prediction model and stores it in model.sav.
     
