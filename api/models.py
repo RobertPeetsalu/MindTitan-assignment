@@ -29,9 +29,9 @@ def train():
     linear_clf.fit( independent, dependent )
     joblib.dump( linear_clf, 'model.sav' )
     
-    #Pickle an empty restaurant record with correct labels to avoid pickling LabelEncoder and OneHotEncoder
-    empty_record = independent.loc[0:0].applymap(lambda x: False)
-    joblib.dump( empty_record, 'empty_record.sav' )
+    #Pickle one restaurant record with correct labels to avoid pickling LabelEncoder and OneHotEncoder
+    record = independent.loc[0:0]
+    joblib.dump( record, 'record.sav' )
     return linear_clf
 
 def predict( restaurants ):
@@ -44,7 +44,7 @@ def predict( restaurants ):
     
     Returns
     -------
-    rating : 0, 1 or 2
+    rating : list of integers 0, 1 or 2
         Predicted rating of the restaurant.
     
     Example calls
@@ -62,21 +62,21 @@ def predict( restaurants ):
                 "smoking_area":"not_permitted", 
                 "other_services":"internet"}]' )
     """
-#    records = joblib.load( 'empty_record.sav' )
-    df_restaurants = one_hot_encode( pd.DataFrame.from_dict( restaurants ) )
-    encoded = joblib.load( 'empty_record.sav' )
-    encoded_restaurants = pd.concat( [encoded, df_restaurants], ignore_index=True).fillna( False ).drop(0)
-#    for restaurant in range( len( restaurants ) ):
-#        records[restaurant] = pd.concat([records, records], ignore_index=True)
-#    records.update( one_hot_encode( df_restaurants ) )
+    df_restaurants = pd.DataFrame.from_dict( restaurants )
+    enc_df_restaurants = one_hot_encode( df_restaurants )
+    
+    #Expand dataframe with full list of acceptable labels by concatenating and then dropping a sample record
+    sample_record = joblib.load( 'record.sav' )
+    encoded_restaurants = pd.concat( [sample_record, enc_df_restaurants], ignore_index=True)
+    encoded_restaurants = encoded_restaurants.fillna( False ).drop(0)
     log.info( '\nEncoded restaurant features:' )
     log.info( encoded_restaurants )
     model = joblib.load( 'model.sav' )
     try: 
-        rating = model.predict( encoded_restaurants )
-        log.info( '\nPredicted restaurant rating:' )
-        log.info( rating )
-        return rating
+        ratings = model.predict( encoded_restaurants )
+        log.info( '\nPredicted restaurant ratings:' )
+        log.info( ratings )
+        return ratings
     except ValueError:
-        log.info( "Unexpected error:", exc_info()[0] )
+        log.info( "ValueError:", exc_info()[0] )
         abort( 416 )
